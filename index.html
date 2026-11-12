@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#928cc3">
+    <meta name="description" content="ECOWAST Dual-Tank Water Management Dashboard">
+    <title>ECOWAST | Water Management System</title>
+
+    <link rel="stylesheet" href="style.css?v=assessment-split-align-20261109">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true">EW</div>
+            <div class="brand-text">
+                <div class="eyebrow">WATER MANAGEMENT / CONTROL INTERFACE</div>
+                <h1>ECOWAST <span>Dual-Tank System</span></h1>
+                <p>Filtration · Recirculation · Irrigation</p>
+            </div>
+        </div>
+        <div class="header-meta">
+            <div class="system-status"><span class="status-dot"></span><span id="systemStatus">SIMULATION ONLINE</span></div>
+            <div class="clock" id="clock">--:--:--</div>
+        </div>
+    </header>
+
+
+    <section class="welcome-bar" aria-label="Welcome and operator profile">
+        <div class="settings-wrap">
+            <button class="settings-toggle" id="settingsToggle" type="button" aria-label="Buka pengaturan" aria-expanded="false" aria-controls="settingsPanel">
+                <span></span><span></span><span></span>
+            </button>
+            <form class="settings-panel" id="settingsPanel" hidden>
+                <label for="usernameInput">Username</label>
+                <input id="usernameInput" name="username" type="text" maxlength="32" autocomplete="nickname" placeholder="System Operator" required>
+                <button type="submit">Simpan</button>
+            </form>
+        </div>
+        <div class="welcome-copy">
+            <span class="welcome-kicker">ECOWAST / OPERATOR DESK</span>
+            <h2>Hi there, <span>Welcome back.</span></h2>
+            <p>Your water treatment system overview is ready.</p>
+            <div class="welcome-date"><span class="date-mark"></span><span id="welcomeDate">Loading date...</span></div>
+        </div>
+        <div class="profile-actions">
+        <div class="profile-card">
+            <div class="profile-avatar" aria-hidden="true">
+                <svg viewBox="0 0 100 100" role="img">
+                    <circle cx="50" cy="50" r="48" fill="#eaf0ff"/>
+                    <path d="M15 88c4-19 17-29 35-29s31 10 35 29" fill="#6f62b5"/>
+                    <path d="M34 62l16 15 16-15 8 26H26z" fill="#ffffff"/>
+                    <path d="M32 38c0-18 8-27 19-27 13 0 20 10 20 27v12c0 15-10 25-21 25S30 65 30 50z" fill="#f2bd91"/>
+                    <path d="M29 42c-3-19 7-32 23-32 15 0 24 12 21 32l-6-8c-9 1-19-3-25-9-2 7-6 12-13 17z" fill="#343044"/>
+                    <path class="avatar-eyes" d="M38 48h5m14 0h5" stroke="#37334b" stroke-width="3" stroke-linecap="round"/>
+                    <path class="avatar-smile" d="M44 61c4 4 9 4 13 0" fill="none" stroke="#a65f57" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M24 91c3-14 12-22 26-22s23 8 26 22" fill="#ffffff"/>
+                    <path d="M40 71l10 10 10-10" fill="none" stroke="#928cc3" stroke-width="4"/>
+                </svg>
+            </div>
+            <div class="profile-details">
+                <span class="profile-label">SIGNED IN AS</span>
+                <strong id="operatorUsername">System Operator</strong>
+                <span class="profile-role">ECOWAST Project Team</span>
+            </div>
+            <div class="profile-sensors" aria-label="Suhu dan kelembaban">
+                <span class="profile-sensor">
+                    <small class="profile-sensor-label">TEMP</small>
+                    <span class="profile-sensor-reading"><strong id="temperatureValue">--</strong><small>°C</small></span>
+                </span>
+                <span class="profile-sensor">
+                    <small class="profile-sensor-label">HUM</small>
+                    <span class="profile-sensor-reading"><strong id="humidityValue">--</strong><small>%</small></span>
+                </span>
+            </div>
+            <span class="profile-status" title="Profile active"></span>
+        </div>
+        </div>
+    </section>
+
+    <main class="dashboard">
+        <nav class="page-switch" aria-label="Pilih halaman">
+            <span class="page-switch-bubble" aria-hidden="true"></span>
+            <button type="button" class="page-switch-button is-active" data-page="main" aria-pressed="true">MAIN</button>
+            <button type="button" class="page-switch-button" data-page="data" aria-pressed="false">DATA</button>
+            <button type="button" class="page-switch-button" data-page="garden" aria-pressed="false">GARDEN</button>
+            <button type="button" class="page-switch-button" data-page="pumps" aria-pressed="false">PUMPS</button>
+        </nav>
+        <section class="evaluation filtration-summary" aria-label="Ringkasan kondisi filtrasi" aria-live="polite">
+            <div class="evaluation-title"><div class="eyebrow"><span class="assessment-led"></span>SYSTEM ASSESSMENT</div><h2>Ringkasan filtrasi</h2></div>
+            <div class="assessment-display" aria-label="Ringkasan empat baris">
+                <div class="assessment-line"><div class="assessment-cell"><span>AIR:</span><strong id="waterQuality" class="state-good">NORMAL</strong></div><i class="assessment-divider" aria-hidden="true"></i><div class="assessment-cell"><span>pH:</span><strong id="phCondition">--</strong></div></div>
+                <div class="assessment-line"><div class="assessment-cell"><span>KERUHAN:</span><strong id="filterTurbidityValue">-- NTU</strong></div><i class="assessment-divider" aria-hidden="true"></i><div class="assessment-cell"><span>STATUS:</span><strong id="filterTurbidityState">Memeriksa</strong></div></div>
+                <div class="assessment-line"><div class="assessment-cell"><span>MODE:</span><strong id="flowMode">Menunggu</strong></div><i class="assessment-divider" aria-hidden="true"></i><div class="assessment-cell"><span>FILTER:</span><strong id="filterRecommendation">Memeriksa</strong></div></div>
+                <div class="assessment-line"><div class="assessment-cell"><span>TANDON:</span><strong id="reservoirStatus">0% · TIDAK MENGISI</strong></div><i class="assessment-divider" aria-hidden="true"></i><div class="assessment-cell"><span>P4:</span><strong id="reservoirPumpState">OFF</strong></div></div>
+            </div>
+        </section>
+        <section class="data-page panel" id="dataPage" aria-label="Data dan nilai sensor">
+            <div class="section-heading">
+                <div><div class="eyebrow">LIVE DATA / 04</div><h2>Nilai sensor & sistem</h2></div>
+                <span class="live-label">PEMBARUAN LANGSUNG</span>
+            </div>
+            <div class="data-analysis-title"><span>ANALISIS DATA SENSOR</span><small>RIWAYAT PEMBACAAN</small></div>
+            <div class="data-layout" aria-label="Nilai dan grafik tiap sensor">
+              <div class="data-pair">
+                <article class="data-card tone-purple" id="dataPhCard">
+                    <div class="data-card-heading"><span>pH AIR</span><small id="dataPhSensor">pH4502C</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataPhValue">7.2</strong><small id="dataPhUnit">pH</small></div></div>
+                    <div class="data-range"><span id="dataPhMin">0</span><span id="dataPhRangeUnit">pH</span><span id="dataPhMax">14</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK pH AIR</strong><small>pH4502C</small></div><canvas id="dataPhChart" role="img" aria-label="Grafik analisis pH air"></canvas></article>
+              </div>
+              <div class="data-pair">
+                <article class="data-card tone-blue" id="dataTurbidityCard">
+                    <div class="data-card-heading"><span>KEKERUHAN</span><small id="dataTurbiditySensor">TURBIDITY</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataTurbidityValue">2.1</strong><small id="dataTurbidityUnit">NTU</small></div></div>
+                    <div class="data-range"><span id="dataTurbidityMin">0</span><span id="dataTurbidityRangeUnit">NTU</span><span id="dataTurbidityMax">100</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK KEKERUHAN</strong><small>TURBIDITY</small></div><canvas id="dataTurbidityChart" role="img" aria-label="Grafik analisis kekeruhan"></canvas></article>
+              </div>
+              <div class="data-pair">
+                <article class="data-card tone-gold" id="dataTank1Card">
+                    <div class="data-card-heading"><span>TANKI AIR NETRAL</span><small>US1</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataTank1Value">57.4</strong><small>%</small></div></div>
+                    <div class="data-range"><span>0%</span><span>LEVEL</span><span>100%</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK TANKI AIR NETRAL</strong><small>US1 · LEVEL %</small></div><canvas id="dataTank1Chart" role="img" aria-label="Grafik level Tanki Air Netral dari US1"></canvas></article>
+              </div>
+              <div class="data-pair">
+                <article class="data-card tone-teal" id="dataTank2Card">
+                    <div class="data-card-heading"><span>TANKI AIR BERSIH</span><small>US2</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataTank2Value">56.1</strong><small>%</small></div></div>
+                    <div class="data-range"><span>0%</span><span>LEVEL</span><span>100%</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK TANKI AIR BERSIH</strong><small>US2 · LEVEL %</small></div><canvas id="dataTank2Chart" role="img" aria-label="Grafik level Tanki Air Bersih dari US2"></canvas></article>
+              </div>
+            </div>
+            <div class="data-secondary-pairs">
+              <div class="data-pair">
+                <article class="data-card tone-teal" id="dataMoistureCard">
+                    <div class="data-card-heading"><span>KELEMBAPAN TANAH</span><small>SOIL SENSOR</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataMoistureValue">41</strong><small>%</small></div></div>
+                    <div class="data-range"><span>0%</span><span>SOIL</span><span>100%</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK KELEMBAPAN TANAH</strong><small>SOIL SENSOR · %</small></div><canvas id="dataMoistureChart" role="img" aria-label="Grafik perubahan kelembapan tanah"></canvas></article>
+              </div>
+              <div class="data-pair">
+                <article class="data-card tone-blue" id="dataTemperatureCard">
+                    <div class="data-card-heading"><span>SUHU UDARA</span><small>DHT11</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataTemperatureValue">--</strong><small>°C</small></div></div>
+                    <div class="data-range"><span>0°C</span><span>SUHU</span><span>50°C</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK SUHU UDARA</strong><small>DHT11 · °C</small></div><canvas id="dataTemperatureChart" role="img" aria-label="Grafik perubahan suhu udara"></canvas></article>
+              </div>
+              <div class="data-pair">
+                <article class="data-card tone-purple" id="dataHumidityCard">
+                    <div class="data-card-heading"><span>KELEMBAPAN UDARA</span><small>DHT11</small></div>
+                    <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataHumidityValue">--</strong><small>%</small></div></div>
+                    <div class="data-range"><span>0%</span><span>HUMIDITY</span><span>100%</span></div>
+                </article>
+                <article class="analysis-card"><div><strong>GRAFIK KELEMBAPAN UDARA</strong><small>DHT11 · %</small></div><canvas id="dataHumidityChart" role="img" aria-label="Grafik perubahan kelembapan udara"></canvas></article>
+              </div>
+            </div>
+            <div class="data-grid data-secondary-grid">
+                <article class="data-card data-status-card">
+                    <div class="data-card-heading"><span>KUALITAS AIR FILTERASI</span><small>WATER QUALITY</small></div>
+                    <strong class="data-status-value" id="dataWaterQuality">WITHIN TARGET</strong>
+                    <p>Hasil evaluasi sensor pH dan kekeruhan.</p>
+                </article>
+                <article class="data-card data-status-card">
+                    <div class="data-card-heading"><span>MODE PROSES</span><small>PROCESS MODE</small></div>
+                    <strong class="data-status-value" id="dataFlowMode">MENUNGGU LEVEL</strong>
+                    <p>Status transfer dan filtrasi tangki.</p>
+                </article>
+                <article class="data-card data-status-card">
+                    <div class="data-card-heading"><span>KAPASITAS TANGKI BERSIH</span><small>TANK 02</small></div>
+                    <strong class="data-status-value" id="dataCapacityStatus">AVAILABLE</strong>
+                    <p>Kapasitas tersisa berdasarkan sensor level.</p>
+                </article>
+            </div>
+        </section>
+        <aside class="panel sensor-panel">
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">INPUT / 01</div>
+                    <h2>Sensor readings</h2>
+                </div>
+                <span class="live-label" id="dataSourceStatus">FIREBASE CONNECTING</span>
+            </div>
+
+            <div class="sensor-carousel" id="sensorCarousel">
+                <div class="sensor-track" id="sensorTrack">
+            <div class="sensor-item">
+                <div class="sensor-heading">
+                    <label for="ph">pH sensor · clean water <small id="phUnit">pH4502C</small></label>
+                    <output id="phValue" class="sensor-value">7.2</output>
+                </div>
+                <input type="range" id="ph" min="0" max="14" step="0.1" value="7.2">
+                <canvas class="sensor-chart" id="phChart" role="img" aria-label="Grafik perubahan sensor pH"></canvas>
+                <div class="range-label"><span>ACIDIC · 0</span><span>NEUTRAL · 7</span><span>ALKALINE · 14</span></div>
+            </div>
+
+            <div class="sensor-item">
+                <div class="sensor-heading">
+                    <label for="turbidity">Turbidity · clean water <small id="turbidityUnit">Water clarity</small></label>
+                    <output id="turbidityValue" class="sensor-value">2.1 NTU</output>
+                </div>
+                <input type="range" id="turbidity" min="0" max="1200" step="1" value="2.1">
+                <canvas class="sensor-chart" id="turbidityChart" role="img" aria-label="Grafik perubahan turbidity"></canvas>
+                <div class="range-label"><span>KOTOR · ≤750 NTU</span><span>KERUH · 751–899 NTU</span><span>BERSIH · ≥900 NTU</span></div>
+            </div>
+
+            <div class="sensor-item" hidden>
+                <div class="sensor-heading">
+                    <label for="tank1Input">Tanki air netral <small>US1</small></label>
+                    <output id="tank1Value" class="sensor-value">57.4%</output>
+                </div>
+                <input type="range" id="tank1Input" min="0" max="100" step="0.1" value="57.4">
+                <canvas class="sensor-chart" id="tank1Chart" role="img" aria-label="Grafik perubahan level Tanki Air Netral"></canvas>
+                <div class="range-label"><span>EMPTY · 0%</span><span>FULL · 100%</span></div>
+            </div>
+
+            <div class="sensor-item" hidden>
+                <div class="sensor-heading">
+                    <label for="tank2Input">Tanki air bersih <small>US2</small></label>
+                    <output id="tank2Value" class="sensor-value">56.1%</output>
+                </div>
+                <input type="range" id="tank2Input" min="0" max="100" step="0.1" value="56.1">
+                <canvas class="sensor-chart" id="tank2Chart" role="img" aria-label="Grafik perubahan level Tanki Air Bersih"></canvas>
+                <div class="range-label"><span>EMPTY · 0%</span><span>HIGH LEVEL · 95%</span></div>
+            </div>
+
+                </div>
+                <div class="sensor-carousel-controls">
+                    <button type="button" id="sensorPrevious" aria-label="Sensor sebelumnya">&#8249;</button>
+                    <span id="sensorPage" aria-live="polite">1 / 2</span>
+                    <button type="button" id="sensorNext" aria-label="Sensor berikutnya">&#8250;</button>
+                </div>
+            </div>
+
+        </aside>
+
+        <div class="right-content">
+
+            <section class="panel tank-panel" id="tankProcess">
+                <div class="section-heading">
+                    <div>
+                        <div class="eyebrow">PROCESS / 02</div>
+                        <h2>Dual-tank process overview</h2>
+                    </div>
+                    <span class="transfer-status" id="transferStatus">TRANSFER ENABLED</span>
+                </div>
+
+                <div class="tank-container">
+                    <article class="tank-card">
+                        <div class="tank-title">
+                            <div><span class="tank-index">01</span><h3>Tanki Air Netral</h3></div>
+                            <span id="tank1Label" class="tank-reading">57.4%</span>
+                        </div>
+                        <div class="tank-shell raw-shell">
+                            <div class="tank-grid"></div>
+                            <div class="water raw-water" id="rawWater"></div>
+                            <span class="tank-percentage" id="rawPercentage">57.4%</span>
+                            <span class="tank-unit">LEVEL</span>
+                        </div>
+                        <div class="tank-info">
+                            <span>INSTRUMENTS</span><strong>LEVEL SENSOR</strong>
+                            <span>PROCESS</span><strong>FILTER INPUT</strong>
+                        </div>
+                    </article>
+
+                    <div class="transfer-column">
+                        <span class="transfer-pipe pipe-in" aria-hidden="true"></span>
+                        <div class="filter-unit" aria-label="Filter air">
+                            <span class="filter-cap"></span>
+                            <span class="filter-body"><i></i><i></i><i></i></span>
+                            <span class="filter-cap"></span>
+                        </div>
+                        <span class="filter-label">FILTER</span>
+                        <span class="transfer-pipe pipe-out" aria-hidden="true"></span>
+                    </div>
+                    <article class="tank-card">
+                        <div class="tank-title">
+                            <div><span class="tank-index clean-index">02</span><h3>Tanki Air Bersih</h3></div>
+                            <span id="tank2Label" class="tank-reading">56.1%</span>
+                        </div>
+                        <div class="tank-shell clean-shell">
+                            <div class="tank-grid"></div>
+                            <div class="water clean-water" id="cleanWater"></div>
+                            <span class="tank-percentage" id="cleanPercentage">56.1%</span>
+                            <span class="tank-unit">LEVEL</span>
+                            <div class="safety-line"><span>HIGH LEVEL · 95%</span></div>
+                        </div>
+                        <div class="clean-quality" aria-live="polite">
+                            <span>KUALITAS AIR FILTERASI :</span>
+                            <strong id="cleanQualityStatus" class="state-good">BERSIH</strong>
+                        </div>
+                    </article>
+                </div>
+                <div class="process-note">
+                    <span class="note-mark"></span>
+                    <span>Transfer mulai saat sensor level tangki baku mencapai 95% dan berhenti saat tangki bersih mencapai 95%.</span>
+                </div>
+                <div class="reservoir-inline" aria-label="Tandon air">
+                    <div class="reservoir-inline-heading"><span>TANDON AIR</span><small id="reservoirSensorState">DEFAULT 0%</small></div>
+                    <div class="reservoir-content">
+                        <div class="reservoir-visual" id="reservoirVisual" data-state="empty" role="img" aria-label="Galon kosong, pompa transfer mati">
+                            <div class="reservoir-pipe" aria-hidden="true"><span class="reservoir-pipe-flow"></span><span class="reservoir-stream"></span></div>
+                            <div class="reservoir-tank" aria-hidden="true">
+                                <div class="reservoir-water" id="reservoirWater"></div>
+                                <div class="reservoir-tank-grid"></div>
+                                <div class="reservoir-tank-label">TANDON</div>
+                            </div>
+                        </div>
+                        <div class="reservoir-copy"><strong id="reservoirVisualStatus">0% · pompa mati</strong><p id="reservoirDescription">Air tidak mengalir ke tandon.</p></div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        <section class="garden-page panel" id="gardenPage" aria-label="Pemantauan tanaman">
+            <div class="garden-plant-card">
+                <div class="plant-scene" id="plantScene" data-condition="fresh" role="img" aria-label="Animasi tanaman segar">
+                    <div class="plant-sun"></div>
+                    <div class="plant-uv-beam" aria-hidden="true"></div>
+                    <div class="plant-uv-lamp" aria-hidden="true"><span></span></div>
+                    <div class="plant-ground"></div>
+                    <svg class="plant-illustration" viewBox="0 0 240 210" aria-hidden="true">
+                        <path class="plant-stem" d="M120 183 C118 150 122 116 120 72" />
+                        <path class="plant-leaf leaf-left" d="M119 145 C91 143 72 124 75 101 C99 101 118 116 119 145Z" />
+                        <path class="plant-leaf leaf-right" d="M121 120 C147 116 164 96 159 75 C137 78 121 94 121 120Z" />
+                        <path class="plant-leaf leaf-top-left" d="M119 94 C99 88 91 72 98 57 C115 63 123 77 119 94Z" />
+                        <path class="plant-leaf leaf-top-right" d="M121 78 C139 69 143 53 134 41 C119 49 115 63 121 78Z" />
+                        <path class="plant-vein" d="M118 139 Q99 122 82 108 M122 113 Q139 96 153 82 M118 89 Q108 73 101 63 M122 73 Q131 59 136 48" />
+                    </svg>
+                    <div class="plant-pot"><span></span></div>
+                    <span class="plant-sparkle sparkle-one">&#10022;</span><span class="plant-sparkle sparkle-two">&#10022;</span>
+                </div>
+                <div class="plant-condition">
+                    <span class="eyebrow">KONDISI TANAMAN</span>
+                    <strong id="plantCondition">TANAMAN SEGAR</strong>
+                    <span id="plantMoisture">Kelembaban tanah 41%</span>
+                    <div class="uv-control">
+                        <div><span class="eyebrow">GARDEN UV</span><strong id="uvStatus">UV OFF</strong></div>
+                        <button id="uvButton" class="pump-button uv-button" type="button" aria-pressed="false">OFF</button>
+                    </div>
+                </div>
+            </div>
+            <div class="garden-sensor sensor-item">
+                <div class="sensor-heading">
+                    <label for="moisture">Soil moisture <small>Irrigation input</small></label>
+                    <output id="moistureValue" class="sensor-value">41%</output>
+                </div>
+                <input type="range" id="moisture" min="0" max="100" value="41">
+                <canvas class="sensor-chart" id="moistureChart" role="img" aria-label="Grafik perubahan kelembapan tanah"></canvas>
+                <div class="range-label"><span>DRY · 0%</span><span>WET · 100%</span></div>
+            </div>
+            <section class="automation-settings" aria-label="Pengaturan otomatisasi taman">
+                <form class="automation-card" id="uvScheduleForm">
+                    <div class="automation-heading">
+                        <div><div class="eyebrow">UV CONTROL</div><h2>Jadwal lampu UV</h2></div>
+                        <label class="automation-switch"><input id="uvScheduleEnabled" type="checkbox"><span>Aktif</span></label>
+                    </div>
+                    <div class="schedule-list" id="uvScheduleList">
+                        <div class="schedule-row" data-schedule-row>
+                            <div class="schedule-time-grid">
+                                <label>Hidup pukul<input id="uvOnTime" class="schedule-start" type="time" value="18:00" required></label>
+                                <label>Mati pukul<input id="uvOffTime" class="schedule-end" type="time" value="06:00" required></label>
+                            </div>
+                            <button class="schedule-remove" type="button" data-remove-schedule aria-label="Hapus jadwal" disabled>Hapus</button>
+                        </div>
+                    </div>
+                    <button class="schedule-add" type="button" data-add-schedule="uvScheduleList">+ Tambah jadwal</button>
+                    <p class="automation-note">Jadwal berulang setiap hari, zona waktu Asia/Jakarta.</p>
+                    <button class="automation-save" type="submit">Simpan jadwal UV</button>
+                    <span class="automation-save-status" id="uvScheduleStatus" role="status" aria-live="polite"></span>
+                </form>
+
+                <form class="automation-card" id="gardenSettingsForm">
+                    <div class="automation-heading">
+                        <div><div class="eyebrow">GARDEN IRRIGATION</div><h2>Mode penyiraman</h2></div>
+                    </div>
+                    <label class="garden-mode-label" for="gardenMode">Mode kontrol
+                        <select id="gardenMode">
+                            <option value="AUTO">OTO · Sensor kelembapan</option>
+                            <option value="MANUAL">MAN · Jadwal harian</option>
+                        </select>
+                    </label>
+                    <div class="garden-mode-fields" id="gardenSensorFields">
+                        <div class="schedule-time-grid">
+                            <label for="moistureOnThreshold">Siram saat ≤ (%)<input id="moistureOnThreshold" type="number" min="0" max="100" step="1" value="30"></label>
+                            <label for="moistureOffThreshold">Berhenti saat ≥ (%)<input id="moistureOffThreshold" type="number" min="0" max="100" step="1" value="45"></label>
+                        </div>
+                        <p class="automation-note">OTO memakai histeresis agar relay tidak sering hidup-mati. Untuk menambah beberapa waktu penyiraman, pilih mode MANUAL.</p>
+                    </div>
+                    <div class="garden-mode-fields" id="gardenScheduleFields" hidden>
+                        <div class="schedule-list" id="gardenScheduleList">
+                            <div class="schedule-row" data-schedule-row>
+                                <div class="schedule-time-grid">
+                                    <label>Mulai siram<input id="gardenStartTime" class="schedule-start" type="time" value="07:00" required></label>
+                                    <label>Berhenti<input id="gardenStopTime" class="schedule-end" type="time" value="07:05" required></label>
+                                </div>
+                                <button class="schedule-remove" type="button" data-remove-schedule aria-label="Hapus jadwal" disabled>Hapus</button>
+                            </div>
+                        </div>
+                        <button class="schedule-add" type="button" data-add-schedule="gardenScheduleList">+ Tambah jadwal</button>
+                        <p class="automation-note">Tambah beberapa waktu siram harian di mode MAN, zona waktu Asia/Jakarta.</p>
+                    </div>
+                    <button class="automation-save" type="submit">Simpan pengaturan</button>
+                    <span class="automation-save-status" id="gardenSettingsStatus" role="status" aria-live="polite"></span>
+                </form>
+            </section>
+        </section>
+        <section class="pump-page" id="pumpPage" aria-label="Pump control">
+            <section class="pump-section">
+                <div class="section-heading">
+                    <div>
+                        <div class="eyebrow">ACTUATORS / 04</div>
+                        <h2>Pump control</h2>
+                    </div>
+                    <span class="manual-label">FIREBASE CONTROL</span>
+                </div>
+                <div class="pump-container">
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9h12a7 7 0 1 1-6.7 9"/><path d="M7 5v8h8M16 16l4 4 4-4"/><path d="M20 16v6"/></svg></div>
+                        <div class="pump-info"><h3>Transfer</h3><p>Neutral tank through filter to clean tank</p></div>
+                        <button id="pump1" class="pump-button" type="button" aria-pressed="false">OFF</button>
+                    </article>
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 10h7v15H5zM20 7h7v18h-7z"/><path d="M12 17h8m-3-3 3 3-3 3"/><path d="M7 7V5h3M22 5h3v2"/></svg></div>
+                        <div class="pump-info"><h3>Re-filtration</h3><p>Clean tank recirculation through filter</p></div>
+                        <button id="pump2" class="pump-button active" type="button" aria-pressed="true">ON</button>
+                    </article>
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 4c-3 5-7 9-7 14a7 7 0 0 0 14 0c0-5-4-9-7-14Z"/><path d="M16 25v4m-5 0h10"/></svg></div>
+                        <div class="pump-info"><h3>Transfer to reservoir</h3><p>Clean tank to water reservoir</p></div>
+                        <button id="pump3" class="pump-button" type="button" aria-pressed="false" aria-label="Aktifkan pompa transfer air bersih ke tandon">OFF</button>
+                    </article>
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 21h22v6H5zM8 21V9h16v12"/><path d="M12 14c0-2 2-3 2-5m4 5c0-2 2-3 2-5"/><path d="M16 3v4m-2-2 2 2 2-2"/></svg></div>
+                        <div class="pump-info"><h3>Irrigation</h3><p>Reservoir watering, managed by soil moisture</p></div>
+                        <button id="pump4" class="pump-button" type="button" aria-pressed="false">OFF</button>
+                    </article>
+                </div>
+            <p class="control-disclaimer">Pump and UV controls send boolean commands to Firebase. Physical operation depends on the connected controller.</p>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <span>ECOWAST / DUAL-TANK SYSTEM</span>
+        <span>PROTOTYPE INTERFACE · V1.0</span>
+    </footer>
+
+    <script src="script.js?v=assessment-combined-display-20261109"></script>
+</body>
+</html>
