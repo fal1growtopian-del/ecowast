@@ -7,15 +7,145 @@
     <meta name="description" content="ECOWAST Dual-Tank Water Management Dashboard">
     <title>ECOWAST | Water Management System</title>
 
-    <link rel="stylesheet" href="style.css?v=assessment-split-align-20261109">
+    <link rel="stylesheet" href="style.css?v=moderator-pump-controls-20261116">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
+    <section class="login-screen" id="loginScreen" aria-labelledby="loginHeading">
+        <form class="login-card" id="loginForm">
+            <div class="brand-mark lock-mark login-brand-mark" id="loginLock" aria-hidden="true"></div>
+            <div class="eyebrow">WATER MANAGEMENT / CONTROL INTERFACE</div>
+            <h1 id="loginHeading" class="rgb-neon">ECOWAST</h1>
+            <p>Masuk untuk membuka dashboard.</p>
+            <label for="loginUsername">Username</label>
+            <input id="loginUsername" name="username" type="text" autocomplete="username" required autofocus>
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+            <button type="submit">Masuk</button>
+            <p class="login-error" id="loginError" role="alert" hidden>Username atau password salah.</p>
+        </form>
+    </section>
+    <section class="moderator-screen" id="moderatorScreen" aria-label="Dashboard moderator" hidden>
+        <form class="moderator-gate" id="moderatorForm">
+            <button class="moderator-close" id="moderatorCancel" type="button" aria-label="Kembali ke dashboard">×</button>
+            <div class="eyebrow">ECOWAST / MODERATOR ACCESS</div>
+            <h2>Verifikasi moderator</h2>
+            <p>Masukkan password untuk membuka dashboard moderator.</p>
+            <label for="moderatorPassword">Password</label>
+            <input id="moderatorPassword" type="password" autocomplete="current-password" required autofocus>
+            <button class="moderator-submit" type="submit">Buka mode moderator</button>
+            <p class="login-error" id="moderatorError" role="alert" hidden>Password salah.</p>
+        </form>
+        <div class="moderator-intro" id="moderatorIntro" hidden>
+            <div class="hacker-portrait" aria-hidden="true">
+                <svg viewBox="0 0 220 220">
+                    <path class="hacker-hood" d="M35 184c0-60 20-118 75-132 55 14 75 72 75 132l-27 20H62z"/>
+                    <path class="hacker-face" d="M69 116c0-34 16-54 41-54s41 20 41 54v29c0 28-20 45-41 45s-41-17-41-45z"/>
+                    <path class="hacker-mask" d="M70 119l40-13 40 13-9 27H79z"/>
+                    <path class="hacker-eye" d="M84 126l18-6m16 0 18 6"/>
+                    <path class="hacker-glow" d="M89 125l10-3m22 0 10 3"/>
+                    <path class="hacker-hood-edge" d="M57 182c12-18 26-28 53-28s41 10 53 28"/>
+                </svg>
+                <span class="hacker-scanline"></span>
+            </div>
+            <h1 class="moderator-intro-title rgb-neon">HACKER MODE</h1>
+        </div>
+        <div class="moderator-dashboard" id="moderatorDashboard" aria-label="Monitoring moderator" hidden>
+            <header class="moderator-monitor-header">
+                <div><span class="moderator-kicker">ECOWAST / LIVE SYSTEM OVERVIEW</span><h1>Moderator Monitoring</h1></div>
+                <button class="moderator-back-button" id="moderatorBack" type="button">← Kembali ke dashboard</button>
+            </header>
+            <section class="moderator-monitor-section">
+                <h2>Sensor &amp; kondisi air</h2>
+                <div class="moderator-monitor-grid">
+                    <article class="monitor-tile"><span>pH AIR</span><strong id="modPh">--</strong></article>
+                    <article class="monitor-tile"><span>KEKERUHAN</span><strong id="modTurbidity">--</strong></article>
+                    <article class="monitor-tile"><span>KUALITAS AIR</span><strong id="modWaterQuality">--</strong></article>
+                    <article class="monitor-tile"><span>STATUS pH</span><strong id="modPhCondition">--</strong></article>
+                    <article class="monitor-tile"><span>STATUS KERUHAN</span><strong id="modTurbidityState">--</strong></article>
+                    <article class="monitor-tile"><span>MODE ALIRAN</span><strong id="modFlowMode">--</strong></article>
+                    <article class="monitor-tile"><span>REKOMENDASI FILTER</span><strong id="modFilterRecommendation">--</strong></article>
+                    <article class="monitor-tile"><span>STATUS FILTER</span><strong id="modFilterStatus">--</strong></article>
+                    <article class="monitor-tile"><span>TANKI AIR NETRAL</span><strong id="modTank1">--</strong></article>
+                    <article class="monitor-tile"><span>TANKI AIR BERSIH</span><strong id="modTank2">--</strong></article>
+                    <article class="monitor-tile"><span>TANDON</span><strong id="modReservoir">--</strong></article>
+                    <article class="monitor-tile"><span>POMPA TANDON</span><strong id="modReservoirPump">--</strong></article>
+                    <article class="monitor-tile"><span>KELEMBAPAN TANAH</span><strong id="modMoisture">--</strong></article>
+                    <article class="monitor-tile"><span>KONDISI TANAMAN</span><strong id="modPlant">--</strong></article>
+                    <article class="monitor-tile"><span>SUHU UDARA</span><strong id="modTemperature">--</strong></article>
+                    <article class="monitor-tile"><span>KELEMBAPAN UDARA</span><strong id="modHumidity">--</strong></article>
+                    <article class="monitor-tile"><span>KAPASITAS SISTEM</span><strong id="modCapacity">--</strong></article>
+                    <article class="monitor-tile"><span>SUMBER DATA</span><strong id="modDataSource">--</strong></article>
+                </div>
+            </section>
+            <section class="moderator-monitor-section">
+                <h2>Pompa, UV &amp; mode</h2>
+                <div class="moderator-monitor-grid actuator-monitor-grid">
+                    <article class="monitor-tile"><span>POMPA 1 / TRANSFER</span><strong id="modPump1">--</strong></article>
+                    <article class="monitor-tile"><span>POMPA 2 / FILTER</span><strong id="modPump2">--</strong></article>
+                    <article class="monitor-tile"><span>POMPA 3 / TANDON</span><strong id="modPump3">--</strong></article>
+                    <article class="monitor-tile"><span>POMPA 4 / IRIGASI</span><strong id="modPump4">--</strong></article>
+                    <article class="monitor-tile"><span>LAMPU UV</span><strong id="modUv">--</strong></article>
+                    <article class="monitor-tile"><span>MODE TRANSFER</span><strong id="modTransferMode">--</strong></article>
+                    <article class="monitor-tile"><span>MODE FILTER ULANG</span><strong id="modRefilterMode">--</strong></article>
+                    <article class="monitor-tile"><span>MODE TANDON</span><strong id="modReservoirMode">--</strong></article>
+                    <article class="monitor-tile"><span>MODE IRIGASI</span><strong id="modIrrigationMode">--</strong></article>
+                    <article class="monitor-tile"><span>MODE TAMAN</span><strong id="modGardenMode">--</strong></article>
+                    <article class="monitor-tile"><span>MODE UV</span><strong id="modUvMode">--</strong></article>
+                    <article class="monitor-tile"><span>STATUS SISTEM</span><strong id="modSystemStatus">--</strong></article>
+                </div>
+            </section>
+            <section class="manual-sensor-panel moderator-manual-panel" aria-labelledby="manualSensorHeading">
+                <div class="manual-sensor-header">
+                    <div><div class="eyebrow">SENSOR SOURCE</div><h3 id="manualSensorHeading">Pilih sumber tiap sensor</h3></div>
+                </div>
+                <div class="manual-sensor-grid" id="manualSensorGrid">
+                    <div class="manual-sensor-row" data-sensor-key="ph"><label for="manualPh">pH AIR</label><select data-sensor-mode="ph" aria-label="Sumber nilai pH"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualPh" type="number" min="0" max="14" step="0.1" aria-label="Nilai manual pH"><button type="button" data-sensor-done="ph">DONE</button></div>
+                    <div class="manual-sensor-row" data-sensor-key="turbidity"><label for="manualTurbidity">KEKERUHAN (NTU)</label><select data-sensor-mode="turbidity" aria-label="Sumber nilai kekeruhan"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualTurbidity" type="number" min="0" max="500" step="0.1" aria-label="Nilai manual kekeruhan"><button type="button" data-sensor-done="turbidity">DONE</button></div>
+                    <div class="manual-sensor-row" data-sensor-key="tank1"><label for="manualTank1">TANKI AIR NETRAL (%)</label><select data-sensor-mode="tank1" aria-label="Sumber nilai tanki air netral"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualTank1" type="number" min="0" max="100" step="0.1" aria-label="Nilai manual tanki air netral"><button type="button" data-sensor-done="tank1">DONE</button></div>
+                    <div class="manual-sensor-row" data-sensor-key="tank2"><label for="manualTank2">TANKI AIR BERSIH (%)</label><select data-sensor-mode="tank2" aria-label="Sumber nilai tanki air bersih"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualTank2" type="number" min="0" max="100" step="0.1" aria-label="Nilai manual tanki air bersih"><button type="button" data-sensor-done="tank2">DONE</button></div>
+                    <div class="manual-sensor-row" data-sensor-key="moisture"><label for="manualMoisture">KELEMBAPAN TANAH (%)</label><select data-sensor-mode="moisture" aria-label="Sumber nilai kelembapan tanah"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualMoisture" type="number" min="0" max="100" step="1" aria-label="Nilai manual kelembapan tanah"><button type="button" data-sensor-done="moisture">DONE</button></div>
+                    <div class="manual-sensor-row" data-sensor-key="temperature"><label for="manualTemperature">SUHU UDARA (C)</label><select data-sensor-mode="temperature" aria-label="Sumber nilai suhu udara"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualTemperature" type="number" min="0" max="50" step="0.1" aria-label="Nilai manual suhu udara"><button type="button" data-sensor-done="temperature">DONE</button></div>
+                    <div class="manual-sensor-row" data-sensor-key="humidity"><label for="manualHumidity">KELEMBAPAN UDARA (%)</label><select data-sensor-mode="humidity" aria-label="Sumber nilai kelembapan udara"><option value="original">NILAI ASLI</option><option value="manual">ISI MANUAL</option></select><input id="manualHumidity" type="number" min="0" max="100" step="0.1" aria-label="Nilai manual kelembapan udara"><button type="button" data-sensor-done="humidity">DONE</button></div>
+                </div>
+                <p class="manual-sensor-status" id="manualSensorStatus" role="status" aria-live="polite">Pilih sumber nilai untuk tiap sensor.</p>
+            </section>
+            <section class="moderator-pump-panel" aria-labelledby="moderatorPumpHeading">
+                <h2 id="moderatorPumpHeading">PUMP</h2>
+                <div class="pump-container moderator-pump-container">
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9h12a7 7 0 1 1-6.7 9"/><path d="M7 5v8h8M16 16l4 4 4-4"/><path d="M20 16v6"/></svg></div>
+                        <div class="pump-info"><h3>Transfer</h3><p>Neutral tank through filter to clean tank</p></div>
+                        <label class="actuator-mode-label">Mode<select id="moderatorTransferMode" data-mirror-mode="transferMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
+                        <button id="moderatorPump1" data-mirror-pump="pump1" class="pump-button" type="button">OFF</button>
+                    </article>
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 10h7v15H5zM20 7h7v18h-7z"/><path d="M12 17h8m-3-3 3 3-3 3"/><path d="M7 7V5h3M22 5h3v2"/></svg></div>
+                        <div class="pump-info"><h3>Re-filtration</h3><p>Clean tank recirculation through filter</p></div>
+                        <label class="actuator-mode-label">Mode<select id="moderatorRefilterMode" data-mirror-mode="refilterMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
+                        <button id="moderatorPump2" data-mirror-pump="pump2" class="pump-button" type="button">OFF</button>
+                    </article>
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 4c-3 5-7 9-7 14a7 7 0 0 0 14 0c0-5-4-9-7-14Z"/><path d="M16 25v4m-5 0h10"/></svg></div>
+                        <div class="pump-info"><h3>Transfer to reservoir</h3><p>Clean tank to water reservoir</p></div>
+                        <label class="actuator-mode-label">Mode<select id="moderatorReservoirMode" data-mirror-mode="reservoirMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
+                        <button id="moderatorPump3" data-mirror-pump="pump3" class="pump-button" type="button">OFF</button>
+                    </article>
+                    <article class="pump-card">
+                        <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 21h22v6H5zM8 21V9h16v12"/><path d="M12 14c0-2 2-3 2-5m4 5c0-2 2-3 2-5"/><path d="M16 3v4m-2-2 2 2 2-2"/></svg></div>
+                        <div class="pump-info"><h3>Irrigation</h3><p>Reservoir watering, managed by soil moisture</p></div>
+                        <label class="actuator-mode-label">Mode<select id="moderatorIrrigationMode" data-mirror-mode="irrigationMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
+                        <button id="moderatorPump4" data-mirror-pump="pump4" class="pump-button" type="button">OFF</button>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </section>
     <header class="top-header">
         <div class="brand">
-            <div class="brand-mark" aria-hidden="true">EW</div>
+            <div class="brand-mark lock-mark" id="dashboardLock" aria-hidden="true"></div>
             <div class="brand-text">
                 <div class="eyebrow">WATER MANAGEMENT / CONTROL INTERFACE</div>
                 <h1>ECOWAST <span>Dual-Tank System</span></h1>
@@ -38,9 +168,38 @@
                 <label for="usernameInput">Username</label>
                 <input id="usernameInput" name="username" type="text" maxlength="32" autocomplete="nickname" placeholder="System Operator" required>
                 <button type="submit">Simpan</button>
+                <section class="tank-settings" aria-labelledby="tankSettingsHeading">
+                    <h3 id="tankSettingsHeading">TANKI SETTING</h3>
+                    <label for="tank1FullSetting">TANKI 1 FULL</label>
+                    <input id="tank1FullSetting" type="number" min="0" step="any" placeholder="Nilai full">
+                    <label for="tank1EmptySetting">TANKI 1 KOSONG</label>
+                    <input id="tank1EmptySetting" type="number" min="0" step="any" placeholder="Nilai kosong">
+                    <label for="tank2FullSetting">TANKI 2 FULL</label>
+                    <input id="tank2FullSetting" type="number" min="0" step="any" placeholder="Nilai full">
+                    <label for="tank2EmptySetting">TANKI 2 KOSONG</label>
+                    <input id="tank2EmptySetting" type="number" min="0" step="any" placeholder="Nilai kosong">
+                    <button id="sendTankSettings" type="button">KIRIM</button>
+                    <span id="tankSettingsStatus" class="tank-settings-status" role="status" aria-live="polite"></span>
+                </section>
+                <section class="tank-settings ntu-settings" aria-labelledby="ntuSettingsHeading">
+                    <h3 id="ntuSettingsHeading">NTU SETTING</h3>
+                    <label for="ntuCleanSetting">NTU BERSIH</label>
+                    <input id="ntuCleanSetting" type="number" step="any" value="10">
+                    <label for="ntuCloudySetting">NTU KERUH</label>
+                    <input id="ntuCloudySetting" type="number" step="any" value="50">
+                    <button id="sendNtuSettings" type="button">KIRIM</button>
+                    <span id="ntuSettingsStatus" class="tank-settings-status" role="status" aria-live="polite"></span>
+                </section>
             </form>
         </div>
         <div class="welcome-copy">
+            <button class="school-identity" id="moderatorTrigger" type="button" aria-label="Buka akses moderator SMK Negeri 2 Palembang">
+                <img src="logo_smk.jpg" alt="Logo SMK Negeri 2 Palembang">
+                <div class="school-identity-copy">
+                    <strong>SMK NEGERI 2 PALEMBANG</strong>
+                    <span>ASAK GALAK KITO PACAK!</span>
+                </div>
+            </button>
             <span class="welcome-kicker">ECOWAST / OPERATOR DESK</span>
             <h2>Hi there, <span>Welcome back.</span></h2>
             <p>Your water treatment system overview is ready.</p>
@@ -117,7 +276,7 @@
                 <article class="data-card tone-blue" id="dataTurbidityCard">
                     <div class="data-card-heading"><span>KEKERUHAN</span><small id="dataTurbiditySensor">TURBIDITY</small></div>
                     <div class="data-gauge-wrap"><svg class="data-gauge" viewBox="0 0 120 100" aria-hidden="true"><path class="gauge-track" d="M 24 84 A 50 50 0 1 1 96 84"/><path class="gauge-progress" d="M 24 84 A 50 50 0 1 1 96 84"/></svg><div class="data-reading"><strong id="dataTurbidityValue">2.1</strong><small id="dataTurbidityUnit">NTU</small></div></div>
-                    <div class="data-range"><span id="dataTurbidityMin">0</span><span id="dataTurbidityRangeUnit">NTU</span><span id="dataTurbidityMax">100</span></div>
+                    <div class="data-range"><span id="dataTurbidityMin">0</span><span id="dataTurbidityRangeUnit">NTU</span><span id="dataTurbidityMax">500</span></div>
                 </article>
                 <article class="analysis-card"><div><strong>GRAFIK KEKERUHAN</strong><small>TURBIDITY</small></div><canvas id="dataTurbidityChart" role="img" aria-label="Grafik analisis kekeruhan"></canvas></article>
               </div>
@@ -208,9 +367,9 @@
                     <label for="turbidity">Turbidity · clean water <small id="turbidityUnit">Water clarity</small></label>
                     <output id="turbidityValue" class="sensor-value">2.1 NTU</output>
                 </div>
-                <input type="range" id="turbidity" min="0" max="1200" step="1" value="2.1">
+                <input type="range" id="turbidity" min="0" max="500" step="1" value="2.1">
                 <canvas class="sensor-chart" id="turbidityChart" role="img" aria-label="Grafik perubahan turbidity"></canvas>
-                <div class="range-label"><span>KOTOR · ≤750 NTU</span><span>KERUH · 751–899 NTU</span><span>BERSIH · ≥900 NTU</span></div>
+                <div class="range-label"><span>BERSIH · 0–10 NTU</span><span>KERUH · 11–50 NTU</span><span>KOTOR · &gt;50 NTU</span></div>
             </div>
 
             <div class="sensor-item" hidden>
@@ -327,6 +486,7 @@
                     <div class="plant-sun"></div>
                     <div class="plant-uv-beam" aria-hidden="true"></div>
                     <div class="plant-uv-lamp" aria-hidden="true"><span></span></div>
+                    <div class="plant-watering" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                     <div class="plant-ground"></div>
                     <svg class="plant-illustration" viewBox="0 0 240 210" aria-hidden="true">
                         <path class="plant-stem" d="M120 183 C118 150 122 116 120 72" />
@@ -345,6 +505,11 @@
                     <span id="plantMoisture">Kelembaban tanah 41%</span>
                     <div class="uv-control">
                         <div><span class="eyebrow">GARDEN UV</span><strong id="uvStatus">UV OFF</strong></div>
+                        <label class="actuator-mode-label">Mode
+                            <select id="uvMode" class="actuator-mode">
+                                <option value="MANUAL">Manual</option><option value="AUTO">Auto</option>
+                            </select>
+                        </label>
                         <button id="uvButton" class="pump-button uv-button" type="button" aria-pressed="false">OFF</button>
                     </div>
                 </div>
@@ -359,26 +524,6 @@
                 <div class="range-label"><span>DRY · 0%</span><span>WET · 100%</span></div>
             </div>
             <section class="automation-settings" aria-label="Pengaturan otomatisasi taman">
-                <form class="automation-card" id="uvScheduleForm">
-                    <div class="automation-heading">
-                        <div><div class="eyebrow">UV CONTROL</div><h2>Jadwal lampu UV</h2></div>
-                        <label class="automation-switch"><input id="uvScheduleEnabled" type="checkbox"><span>Aktif</span></label>
-                    </div>
-                    <div class="schedule-list" id="uvScheduleList">
-                        <div class="schedule-row" data-schedule-row>
-                            <div class="schedule-time-grid">
-                                <label>Hidup pukul<input id="uvOnTime" class="schedule-start" type="time" value="18:00" required></label>
-                                <label>Mati pukul<input id="uvOffTime" class="schedule-end" type="time" value="06:00" required></label>
-                            </div>
-                            <button class="schedule-remove" type="button" data-remove-schedule aria-label="Hapus jadwal" disabled>Hapus</button>
-                        </div>
-                    </div>
-                    <button class="schedule-add" type="button" data-add-schedule="uvScheduleList">+ Tambah jadwal</button>
-                    <p class="automation-note">Jadwal berulang setiap hari, zona waktu Asia/Jakarta.</p>
-                    <button class="automation-save" type="submit">Simpan jadwal UV</button>
-                    <span class="automation-save-status" id="uvScheduleStatus" role="status" aria-live="polite"></span>
-                </form>
-
                 <form class="automation-card" id="gardenSettingsForm">
                     <div class="automation-heading">
                         <div><div class="eyebrow">GARDEN IRRIGATION</div><h2>Mode penyiraman</h2></div>
@@ -401,13 +546,13 @@
                             <div class="schedule-row" data-schedule-row>
                                 <div class="schedule-time-grid">
                                     <label>Mulai siram<input id="gardenStartTime" class="schedule-start" type="time" value="07:00" required></label>
-                                    <label>Berhenti<input id="gardenStopTime" class="schedule-end" type="time" value="07:05" required></label>
+                                    <label>Durasi siram (detik)<input id="gardenDuration" class="schedule-duration" type="number" min="1" max="86400" step="1" value="10" required></label>
                                 </div>
                                 <button class="schedule-remove" type="button" data-remove-schedule aria-label="Hapus jadwal" disabled>Hapus</button>
                             </div>
                         </div>
                         <button class="schedule-add" type="button" data-add-schedule="gardenScheduleList">+ Tambah jadwal</button>
-                        <p class="automation-note">Tambah beberapa waktu siram harian di mode MAN, zona waktu Asia/Jakarta.</p>
+                        <p class="automation-note">Dashboard memantau jadwal harian saat terbuka. Siram berlangsung sesuai durasi yang diatur, zona waktu Asia/Jakarta.</p>
                     </div>
                     <button class="automation-save" type="submit">Simpan pengaturan</button>
                     <span class="automation-save-status" id="gardenSettingsStatus" role="status" aria-live="polite"></span>
@@ -427,21 +572,25 @@
                     <article class="pump-card">
                         <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9h12a7 7 0 1 1-6.7 9"/><path d="M7 5v8h8M16 16l4 4 4-4"/><path d="M20 16v6"/></svg></div>
                         <div class="pump-info"><h3>Transfer</h3><p>Neutral tank through filter to clean tank</p></div>
+                        <label class="actuator-mode-label">Mode<select id="transferMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
                         <button id="pump1" class="pump-button" type="button" aria-pressed="false">OFF</button>
                     </article>
                     <article class="pump-card">
                         <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 10h7v15H5zM20 7h7v18h-7z"/><path d="M12 17h8m-3-3 3 3-3 3"/><path d="M7 7V5h3M22 5h3v2"/></svg></div>
                         <div class="pump-info"><h3>Re-filtration</h3><p>Clean tank recirculation through filter</p></div>
+                        <label class="actuator-mode-label">Mode<select id="refilterMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
                         <button id="pump2" class="pump-button active" type="button" aria-pressed="true">ON</button>
                     </article>
                     <article class="pump-card">
                         <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 4c-3 5-7 9-7 14a7 7 0 0 0 14 0c0-5-4-9-7-14Z"/><path d="M16 25v4m-5 0h10"/></svg></div>
                         <div class="pump-info"><h3>Transfer to reservoir</h3><p>Clean tank to water reservoir</p></div>
+                        <label class="actuator-mode-label">Mode<select id="reservoirMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
                         <button id="pump3" class="pump-button" type="button" aria-pressed="false" aria-label="Aktifkan pompa transfer air bersih ke tandon">OFF</button>
                     </article>
                     <article class="pump-card">
                         <div class="pump-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 21h22v6H5zM8 21V9h16v12"/><path d="M12 14c0-2 2-3 2-5m4 5c0-2 2-3 2-5"/><path d="M16 3v4m-2-2 2 2 2-2"/></svg></div>
                         <div class="pump-info"><h3>Irrigation</h3><p>Reservoir watering, managed by soil moisture</p></div>
+                        <label class="actuator-mode-label">Mode<select id="irrigationMode" class="actuator-mode"><option value="MANUAL">Manual</option><option value="AUTO">Auto</option></select></label>
                         <button id="pump4" class="pump-button" type="button" aria-pressed="false">OFF</button>
                     </article>
                 </div>
@@ -455,6 +604,6 @@
         <span>PROTOTYPE INTERFACE · V1.0</span>
     </footer>
 
-    <script src="script.js?v=assessment-combined-display-20261109"></script>
+    <script src="script.js?v=moderator-pump-controls-20261116"></script>
 </body>
 </html>
